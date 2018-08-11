@@ -90,6 +90,7 @@ Swipe can take an optional second parameter– an object of key/value settings:
 - **disableScroll** Boolean *(default: `false`)*: prevent any touch events on this container from scrolling the page.
 - **stopPropagation** Boolean *(default: `false`)*: stop event propagation.
 - **callback** Function *(default: `function() {}`)*: runs at slide change. Three parameters are passed to the function: `index` (the current slide index), `elem` (the current slide element) and `dir` (direction: `1` for left or backward, `-1` for right or forward).
+- **transitioning** Function *(default: `function() {}`)*: runs as a slide is transitioning
 - **transitionEnd** Function *(default: `function() {}`)*: runs at the end of a slide transition. Two parameters are passed to the function: `index` (the current slide index) and `elem` (the current slide element).
 
 ### Example
@@ -104,6 +105,7 @@ window.mySwipe = new Swipe(document.getElementById('slider'), {
   disableScroll: false,
   stopPropagation: false,
   callback: function(index, elem, dir) {},
+  transitioning: function() {},
   transitionEnd: function(index, elem) {}
 });
 ```
