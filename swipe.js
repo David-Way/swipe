@@ -53,7 +53,6 @@
 
     var disabled = false;
 
-    // utilities
     // simple no operation function
     var noop = function() {};
     // offload a functions execution
@@ -219,6 +218,9 @@
 
           // stop slideshow
           stop();
+
+          // run transitioning callback
+          runTransitioning();
 
           // increase resistance if first or last slide
           if (options.continuous) { // we don't add resistance at the end
@@ -548,6 +550,12 @@
     function runCallback(pos, index, dir) {
       if (options.callback) {
         options.callback(pos, index, dir);
+      }
+    }
+
+    function runTransitioning() {
+      if (options.transitioning) {
+        offloadFn(options.transitioning());
       }
     }
 

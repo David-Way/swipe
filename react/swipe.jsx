@@ -22,7 +22,6 @@ class Swipe extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-
     this.needsReSetup = false;
     this._isMount = false;
     this.instance = null;
@@ -62,6 +61,7 @@ class Swipe extends React.Component {
       disableScroll,
       stopPropagation,
       callback,
+      transitioning,
       transitionEnd
     } = this.props;
 
@@ -75,6 +75,7 @@ class Swipe extends React.Component {
       disableScroll,
       stopPropagation,
       callback,
+      transitioning,
       transitionEnd
     };
   }
@@ -198,6 +199,7 @@ Swipe.defaultProps = {
   disableScroll: false,
   stopPropagation: false,
   callback: noop,
+  transitioning: noop,
   transitionEnd: noop
 };
 
@@ -213,6 +215,7 @@ Swipe.propTypes = {
   disableScroll: PropTypes.bool,
   stopPropagation: PropTypes.bool,
   callback: PropTypes.func,
+  transitioning: PropTypes.func,
   transitionEnd: PropTypes.func
 };
 
