@@ -9,7 +9,7 @@ Swipe
 
 > Swipe is the most accurate touch slider. It is extremely lightweight (only 6kb minified) and works across all browsers, including IE7+.
 
-> Support both Angular.js and React.js
+> Support both React.js and Angular.js(v1)
 
 ## Note
 
@@ -19,15 +19,17 @@ This repo is a continuation of the dead [Swipe](https://github.com/thebird/Swipe
 
 ### Preview
 
-[![Preview Image](images/preview.png)](http://lyfeyaj.github.io/swipe/)
+[![Preview Image](docs/images/preview.png)](https://swipe.js.org)
 
 Thanks to [@loup-brun](https://github.com/loup-brun)
 
 ### Installation
 
-You can install this package directly via Bower `bower install swipe-js` or NPM `npm install swipejs`.
+```bash
+npm i swipejs
+```
 
-See the [online example](http://lyfeyaj.github.io/swipe/) for a simple demo.
+See the [online example](https://swipe.js.org) for a simple demo.
 
 ### Markup
 
@@ -77,9 +79,9 @@ window.mySwipe = new Swipe(document.getElementById('slider'));
 
 I always place this at the bottom of the page, externally, to verify the page is ready.
 
-## Config Options
+## Options
 
-Swipe can take an optional second parameter– an object of key/value settings:
+Swipe can take an optional second parameter – an object of key/value settings:
 
 - **startSlide** Integer *(default: `0`)*: index position at which Swipe should start.
 - **speed** Integer *(default: `300`)*: speed of prev and next transitions in milliseconds.
@@ -114,29 +116,33 @@ window.mySwipe = new Swipe(document.getElementById('slider'), {
 
 A Swipe instance exposes the following public methods:
 
-- `prev()` slide to the previous slide.
-- `next()` slide to the next slide.
-- `getPos()`: return the current slide index position.
-- `getNumSlides()`: return the number of slides.
-- `slide(index, duration)`: slide to the position matching the `index` (integer) (`duration`: speed of transition in milliseconds).
-- `restart()`: restart the slideshow with autoplay.
-- `stop()`: stop the slideshow and disable autoplay.
-- `setup(options)`: reinitialize swipe with options.
-- `disable()`: disable slideshow.
-- `enable()`: enable slideshow.
-- `kill()`: completely remove the Swipe instance.
+| Methods                  | Description                                                                                             |
+|--------------------------|---------------------------------------------------------------------------------------------------------|
+| `prev()`                 | slide to the previous slide.                                                                            |
+| `next()`                 | slide to the next slide.                                                                                |
+| `getPos()`               | return the current slide index position.                                                                |
+| `getNumSlides()`         | return the number of slides.                                                                            |
+| `slide(index, duration)` | slide to the position matching the `index` (integer) (`duration`: speed of transition in milliseconds). |
+| `restart()`              | restart the slideshow with autoplay.                                                                    |
+| `stop()`                 | stop the slideshow and disable autoplay.                                                                |
+| `setup(options)`         | reinitialize swipe with options.                                                                        |
+| `disable()`              | disable slideshow.                                                                                      |
+| `enable()`               | enable slideshow.                                                                                       |
+| `kill()`                 | completely remove the Swipe instance.                                                                   |
 
-## Browser Support
+## Supports
+
+### Browser Support
 
 Swipe is now compatible with all browsers, including IE7+. Swipe works best on devices that support CSS transforms and touch events, but can be used without these as well. A few helper methods determine touch and CSS transition support and choose the proper animation methods accordingly.
 
-## React Support
+### React Support
 
-Please go to [react swipe plugin](react), or check the [example](examples/react)
+Please go to [react swipe plugin](react), or check the [example](docs/examples/react)
 
-## Angular Support
+### Angular(V1) Support
 
-Please go to [angular swipe plugin](angular-swipe) for source code and usage example.
+Please go to [angular swipe plugin](https://swipe.js.org/examples/angular-v1) for source code and usage example.
 
 ## Who's using Swipe
 
@@ -144,31 +150,31 @@ Please go to [angular swipe plugin](angular-swipe) for source code and usage exa
   <tbody>
     <tr>
       <td align="center" valign="middle">
-        <img src="icons/airbnb.png" width="170px" height="80px">
+        <img src="docs/icons/airbnb.png" width="170px" height="80px">
       </td>
       <td align="center" valign="middle">
-        <img src="icons/nhl.png" width="170px" height="80px">
+        <img src="docs/icons/nhl.png" width="170px" height="80px">
       </td>
       <td align="center" valign="middle">
-        <img src="icons/htc.png" width="170px" height="80px">
+        <img src="docs/icons/htc.png" width="170px" height="80px">
       </td>
       <td align="center" valign="middle">
-        <img src="icons/thinkgeek.png" width="170px" height="80px">
+        <img src="docs/icons/thinkgeek.png" width="170px" height="80px">
       </td>
     </tr>
     <tr></tr>
     <tr>
       <td align="center" valign="middle">
-        <img src="icons/snapguide.png" width="170px" height="80px">
+        <img src="docs/icons/snapguide.png" width="170px" height="80px">
       </td>
       <td align="center" valign="middle">
-        <img src="icons/everlane.png" width="170px" height="80px">
+        <img src="docs/icons/everlane.png" width="170px" height="80px">
       </td>
       <td align="center" valign="middle">
-        <img src="icons/boqii.png" width="170px" height="80px">
+        <img src="docs/icons/boqii.png" width="170px" height="80px">
       </td>
       <td align="center" valign="middle">
-        <img src="icons/allbeauty.png" width="170px" height="80px">
+        <img src="docs/icons/allbeauty.png" width="170px" height="80px">
       </td>
     </tr>
   </tbody>

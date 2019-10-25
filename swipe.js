@@ -1,5 +1,5 @@
 /*!
- * Swipe 2.2.11
+ * Swipe 2.2.14
  *
  * Brad Birdsall
  * Copyright 2013, MIT License
@@ -83,9 +83,33 @@
       return throttledFn;
     };
 
+    // check whether event is cancelable
+    var isCancelable = function (event) {
+      if (!event) return false;
+      return typeof event.cancelable !== 'boolean' || event.cancelable;
+    };
+
     // check browser capabilities
     var browser = {
       addEventListener: !!root.addEventListener,
+      passiveEvents: (function () {
+        // Test via a getter in the options object to see if the passive property is accessed
+        var supportsPassive = false;
+        try {
+          var opts = Object.defineProperty({}, 'passive', {
+            // eslint-disable-next-line getter-return
+            get: function () {
+              supportsPassive = true;
+            }
+          });
+          root.addEventListener('testEvent', null, opts);
+          root.removeEventListener('testEvent', null, opts);
+        }
+        catch (e) {
+          supportsPassive = false;
+        }
+        return supportsPassive;
+      })(),
       // eslint-disable-next-line no-undef
       touch: ('ontouchstart' in root) || root.DocumentTouch && _document instanceof DocumentTouch,
       transitions: (function(temp) {
@@ -107,6 +131,16 @@
     var index = parseInt(options.startSlide, 10) || 0;
     var speed = options.speed || 300;
     options.continuous = options.continuous !== undefined ? options.continuous : true;
+
+    // check text direction
+    var slideDir = (function(el, prop, dir) {
+      if (el.currentStyle) {
+        dir = el.currentStyle[prop];
+      } else if (root.getComputedStyle) {
+        dir = root.getComputedStyle(el, null).getPropertyValue(prop);
+      }
+      return 'rtl' === dir ? 'right' : 'left';
+    })(container, 'direction');
 
     // AutoRestart option: auto restart slideshow after user's touch event
     options.autoRestart = options.autoRestart !== undefined ? options.autoRestart : false;
@@ -175,7 +209,7 @@
           element.addEventListener('mouseup', this, false);
           element.addEventListener('mouseleave', this, false);
         } else {
-          element.addEventListener('touchmove', this, false);
+          element.addEventListener('touchmove', this, browser.passiveEvents ? { passive: false } : false);
           element.addEventListener('touchend', this, false);
         }
 
@@ -192,7 +226,8 @@
             return;
           }
 
-          if (options.disableScroll) {
+          // we can disable scrolling unless it is already in progress
+          if (options.disableScroll && isCancelable(event)) {
             event.preventDefault();
           }
 
@@ -213,8 +248,11 @@
         // if user is not trying to scroll vertically
         if (!isScrolling) {
 
-          // prevent native scrolling
-          event.preventDefault();
+          // if it is not already scrolling
+          if (isCancelable(event)) {
+            // prevent native scrolling
+            event.preventDefault();
+          }
 
           // stop slideshow
           stop();
@@ -333,7 +371,7 @@
           element.removeEventListener('mouseup', events, false);
           element.removeEventListener('mouseleave', events, false);
         } else {
-          element.removeEventListener('touchmove', events, false);
+          element.removeEventListener('touchmove', events, browser.passiveEvents ? { passive: false } : false);
           element.removeEventListener('touchend', events, false);
         }
 
@@ -404,7 +442,7 @@
     function detachEvents() {
       if (browser.addEventListener) {
         // remove current event listeners
-        element.removeEventListener('touchstart', events, false);
+        element.removeEventListener('touchstart', events, browser.passiveEvents ? { passive: true } : false);
         element.removeEventListener('mousedown', events, false);
         element.removeEventListener('webkitTransitionEnd', events, false);
         element.removeEventListener('msTransitionEnd', events, false);
@@ -423,7 +461,7 @@
 
         // set touchstart event on element
         if (browser.touch) {
-          element.addEventListener('touchstart', events, false);
+          element.addEventListener('touchstart', events, browser.passiveEvents ? { passive: true } : false);
         }
 
         if (options.draggable) {
@@ -488,6 +526,13 @@
         slides = element.children;
       }
 
+      // adjust style on rtl
+      if ('right' === slideDir) {
+        for (var j = 0; j < slides.length; j++) {
+          slides[j].style.float = 'right';
+        }
+      }
+
       // create an array to store current positions of each slide
       slidePos = new Array(slides.length);
 
@@ -505,7 +550,7 @@
         slide.setAttribute('data-index', pos);
 
         if (browser.transitions) {
-          slide.style.left = (pos * -width) + 'px';
+          slide.style[slideDir] = (pos * -width) + 'px';
           move(pos, index > pos ? -width : (index < pos ? width : 0), 0);
         }
       }
@@ -517,7 +562,7 @@
       }
 
       if (!browser.transitions) {
-        element.style.left = (index * -width) + 'px';
+        element.style[slideDir] = (index * -width) + 'px';
       }
 
       container.style.visibility = 'visible';
@@ -654,18 +699,18 @@
         style.OTransitionDuration =
         style.transitionDuration = speed + 'ms';
 
-      style.webkitTransform = 'translate(' + dist + 'px,0)' + 'translateZ(0)';
-      style.msTransform =
+      style.webkitTransform =
+        style.msTransform =
         style.MozTransform =
-        style.OTransform = 'translateX(' + dist + 'px)';
-
+        style.OTransform =
+        style.transform = 'translateX(' + dist + 'px)';
     }
 
     function animate(from, to, speed) {
 
       // if not an animation, just reposition
       if (!speed) {
-        element.style.left = to + 'px';
+        element.style[slideDir] = to + 'px';
         return;
       }
 
@@ -676,7 +721,7 @@
 
         if (timeElap > speed) {
 
-          element.style.left = to + 'px';
+          element.style[slideDir] = to + 'px';
 
           if (delay || options.autoRestart) restart();
 
@@ -687,7 +732,7 @@
           return;
         }
 
-        element.style.left = (( (to - from) * (Math.floor((timeElap / speed) * 100) / 100) ) + from) + 'px';
+        element.style[slideDir] = (( (to - from) * (Math.floor((timeElap / speed) * 100) / 100) ) + from) + 'px';
       }, 4);
 
     }
@@ -730,7 +775,7 @@
 
       // reset element
       element.style.width = '';
-      element.style.left = '';
+      element.style[slideDir] = '';
 
       // reset slides
       var pos = slides.length;
@@ -750,7 +795,7 @@
 
         // remove styles
         slide.style.width = '';
-        slide.style.left = '';
+        slide.style[slideDir] = '';
 
         slide.style.webkitTransitionDuration =
           slide.style.MozTransitionDuration =
